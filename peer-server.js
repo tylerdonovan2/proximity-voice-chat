@@ -13,4 +13,4 @@ const peerServer = ExpressPeerServer(server, {
     proxied: true
 });
 
-app.use('/', peerServer);
+app.use('/peerjs', peerServer);

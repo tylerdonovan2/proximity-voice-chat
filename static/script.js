@@ -1,11 +1,11 @@
 const socket = io('/')
 const peer = new Peer(undefined, {
-    // host: '2f54-2601-40c-c000-4690-5d4b-4990-6d4a-b5d9.ngrok-free.app',
+    host: '3001-tylerdonova-proximityvo-xxzgkd8yxxk.ws-us98.gitpod.io',
     // port: '',
-    host: 'localhost',
-    port: 3001,
+    // host: 'localhost',
+    // port: 3001,
     // secure: true,
-    // path: "/",
+    path: "/peerjs",
 });
 const peers = {}
 
@@ -18,42 +18,41 @@ let myStream = null
 
 let currentGeoLocation = null
 
-navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
-    myAudio = createUser(stream)
-    myAudio.muted = true
-    myStream = stream
-
-    peer.on('call',call => {
-        call.answer(stream)
-
-        handleConnection(call.peer,call)
-    })
-
-    socket.on('user-connected',id => {
-        socket.emit('proximity-check',myId,id)
-
-        socket.on('proximity-check',(id1,id2,inProximity) => {
-            if(!(id1 == myId && id2 == id && inProximity)) return
-
-            const call = peer.call(id, stream)
-            
-            handleConnection(id,call)
-            
-        })
-    })
-})
 
 peer.on('open', id => {
 	console.log('My peer ID is: ' + id);
     myId = id
-    socket.emit('join-room', ROOM_ID, id)
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
+        myAudio = createUser(stream)
+        myAudio.muted = true
+        myStream = stream
+        peer.on('call',call => {
+            call.answer(stream)
+            handleConnection(call.peer,call)
+        })
+        socket.on('user-connected',id => {
+            socket.emit('proximity-check',myId,id)
+            socket.on('proximity-check',(id1,id2,inProximity) => {
+                if(!(id1 == myId && id2 == id && inProximity)) return
+                const call = peer.call(id, stream)
+                
+                handleConnection(id,call)
+                
+            })
+        })
+        navigator.geolocation.getCurrentPosition(geolocation => {
+            const geoLocation = {latitude: geolocation.coords.latitude,longitude:geolocation.coords.longitude}
+            latitudeText.innerHTML = geolocation.coords.latitude
+            longitudeText.innerHTML = geolocation.coords.longitude
+            socket.emit('join-room', ROOM_ID, id,geoLocation)
+        })
+    })
     
     setInterval(() => {getGeoLocation()},1000)
 });
 
 socket.on('user-disconnected', id => {
     endCall(id)
-
 })
 
 function endCall(id){
@@ -63,36 +62,50 @@ function endCall(id){
     }
 }
 
+const latitudeText = document.querySelector("#latitude-text")
+const longitudeText = document.querySelector("#longitude-text")
+
 function getGeoLocation(){
     navigator.geolocation.getCurrentPosition(geolocation => {
         const geoLocation = {latitude: geolocation.coords.latitude,longitude:geolocation.coords.longitude}
-        if (geoLocation == currentGeoLocation) return
+        latitudeText.innerHTML = geolocation.coords.latitude
+        longitudeText.innerHTML = geolocation.coords.longitude
+        if(currentGeoLocation){
+            if (geoLocation.latitude == currentGeoLocation.latitude && geoLocation.longitude == currentGeoLocation.longitude) return
+        }
 
         currentGeoLocation = geoLocation
         socket.emit('update-location',geoLocation,() =>{
-            socket.emit('proximity-list',(inProximity)=>{
+            console.log("Getting Proximity List")
+            socket.emit('proximity-list',myId,(inProximity)=>{
+
                 const currentCalls = Object.keys(peers)
+                console.log(inProximity,currentCalls)
                 
                 const endCalls = currentCalls.filter(x => !inProximity.includes(x))
                 const startCalls = inProximity.filter(x => !currentCalls.includes(x))
 
+                console.log(startCalls,endCalls)
+
 
                 // end calls no longer in proximity
                 for(let i = 0;i< endCalls.length;i++){
-                    endCall(i)
+                    endCall(endCalls[i])
                 }
 
                 // start calls that are now in proximity
                 for(let i = 0;i< startCalls.length;i++){
                     const call = peer.call(startCalls[i], myStream)
-            
+             
                     handleConnection(startCalls[i],call)
                 }
 
                 
             })
         })
+
     })
+    
 }
 
 function handleConnection(id,call){
