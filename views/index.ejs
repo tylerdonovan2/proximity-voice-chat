@@ -7,11 +7,47 @@
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="styles.css">
-    <title>Proximity Chat</title>
+    <title>Proximity Voice Chat</title>
 </head>
 <body>
-    <div>Current Location (Latitude: <span id="latitude-text"></span> Longitude:<span id="longitude-text"></span>)</div>
-    <div class="container" id="container"></div>
+    <div class="safe-area-container">
+        <div class="audio-controls">
+            <div class="mute-container">
+                <button>M</button>
+            </div>
+        </div>
+        <div class="main-user-container">
+            <div class="user-container" id="user-container">
+                <div class="user">
+                    <div class="user-relative">
+                        <div class="user-information">
+                            <div class="profile-picture-container">
+                                <img class="profile-picture" src="default.jpeg">
+                            </div>
+                            <div class="sound-meter-container">
+                                
+                            </div>
+                            <div class="user-mute-container">
+                                
+                            </div>
+                        </div>
+                        <div class="user-dropdown no-display">
+    
+                        </div>
+                    </div>
+                </div>
+                <div class="user"></div>
+                <div class="user"></div>
+                <div class="user"></div>
+                <div class="user"></div>
+                <div class="user"></div>
+                <div class="user"></div>
+                <div class="user"></div>
+                <div class="user"></div>
+            </div>
+        </div>
+        <div>Current Location (Latitude: <span id="latitude-text"></span> Longitude:<span id="longitude-text"></span>)</div>
+    </div>
 </body>
 <script src="script.js"></script>
 </html>

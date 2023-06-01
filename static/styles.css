@@ -3,18 +3,79 @@
     padding: 0;
 }
 body{
-    width: 100%;
-    height: 100%;
+    background-color: #4E3636;
 }
-.container{
+
+.safe-area-container{
+    margin-top: 10px;
+    padding: 10px;
+}
+.audio-controls{
+    border-radius: 10px;
+    background-color: #321E1E;
     width: 100%;
+    height: 150px;
+}
+.main-user-container{
+    border-radius: 10px;
+    margin-top: 10px;
+    background-color: #321E1E;
+    padding: 10px;
+    height: 50vh;
+}
+.user-container{
+    border-radius: 10px;
+    background-color: #321E1E;
     height: 100%;
+    overflow-y: scroll;
+}
+
+.user{
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.user-relative{
+    position: relative;
+    width: 100%;
+}
+.user-information{
+    z-index: 2;
+    position: absolute;
+    background-color: #ac0c0c;
+    border-radius: 10px;
+    height: 75px;
+    width: 100%;
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
-.user{
-    background-color: red;
-    width: 100px;
-    height: 100px;
-    margin: 5px;
+.user-dropdown{
+    z-index: 1;
+    position: absolute;
+    background-color: #793636;
+    border-radius: 10px;
+    display: flex;
+    top: 0;
+    height: 150px;
+    width: 100%;
 }
+.no-display{
+    display: none;
+}
+
+.profile-picture-container{
+    margin-left: 12.5px;
+    display: flex;
+    align-items: center;
+}
+.profile-picture{
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}
+
+.user-mute-container{
+    float: right;
+}
+

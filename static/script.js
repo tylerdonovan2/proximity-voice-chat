@@ -1,15 +1,22 @@
+const devmode = true
 const socket = io('/')
 const peer = new Peer(undefined, {
-    host: '3001-tylerdonova-proximityvo-xxzgkd8yxxk.ws-us98.gitpod.io',
-    // port: '',
-    // host: 'localhost',
-    // port: 3001,
+    host: devmode ? 'localhost' : '3001-tylerdonova-proximityvo-xxzgkd8yxxk.ws-us98.gitpod.io',
+    port: devmode ? '3001' : '',
     // secure: true,
     path: "/peerjs",
 });
 const peers = {}
 
-const audioContainer = document.querySelector("#container")
+const audioContainer = document.querySelector("#user-container")
+
+const user = document.querySelector("#user-container > div:nth-child(1)")
+var userDropdown = document.querySelector("#user-container > div:nth-child(1) > div.user-dropdown.no-display")
+var droppedDown = false
+user.addEventListener("click",() =>{
+    userDropdown.className = droppedDown ? "user-dropdown no-display" : "user-dropdown"
+    droppedDown = !droppedDown
+})
 
 const ROOM_ID = "1"
 
